@@ -43,39 +43,61 @@ function checkEmptyInput(user_Name, user_Email, user_Password) {
 //the user's data save in local storage as array of obj. when click get started button
 getStarted.addEventListener('click', signUp);
 
-if (localStorage.getItem("users") == null) {
-    localStorage.setItem("users", JSON.stringify(arrayOfUser))
-}
+// if (localStorage.getItem("users") == null) {
+//     localStorage.setItem("users", JSON.stringify(arrayOfUser))
+// }
 
-function signUp() {
-
+async function signUp() {
+    let user = {
+        username:"",
+        email:"",
+        password:"",
+        currency:""
+    };
     let user_Name = document.getElementById("name").value,
         user_Email = document.getElementById("email").value,
         user_Password = document.getElementById("password").value,
         user_Currency = document.getElementById("currency").value;
 
-    unknown.Name = user_Name
-    unknown.Email = user_Email
-    unknown.Password = user_Password
-    unknown.Currency = user_Currency
+    user.username = user_Name
+    user.email = user_Email
+    user.password = user_Password
+    user.currency = user_Currency
+    
+    // arrayOfUser = localStorage.getItem("users") === null ? [] : JSON.parse(localStorage.getItem("users"));
+    // arrayOfUser.push(unknown);
+    try {
+        const response = await fetch("http://127.0.0.1:3000/api/v1/auth/signup", {
+            "method": "post",
+            "headers": {
+                "Content-Type": "application/json"
+            },
+            "body": JSON.stringify(user)
 
-    arrayOfUser = localStorage.getItem("users") === null ? [] : JSON.parse(localStorage.getItem("users"));
-    arrayOfUser.push(unknown);
-
-    //if the user re-enter same email amessage will appear and will not store.
-    if (!checkEmptyInput(user_Name, user_Email, user_Password)) {
-        if (checkEmail(user_Email, JSON.parse(localStorage.getItem("users")))) mailmsg.style.display = "block"
-        else {
-            localStorage.setItem("users", JSON.stringify(arrayOfUser));
-            localStorage.setItem("unknown", JSON.stringify(unknown));
-            //when click on get started will save data and directed the user to previous link
-            if (document.referrer == 'http://127.0.0.1:5500/login/login.html' || document.referrer == 'http://127.0.0.1:5500/home/home.html')
-                location.href = '../home/home.html'
-            else
-                location.href = document.referrer
+        })
+        console.log(response)
+        if(response.status == 409){
+            console.log("sdsd")
         }
+    } catch (e) {
+        console.log("error", e.message)
     }
+    
+    //if the user re-enter same email amessage will appear and will not store.
+    // if (!checkEmptyInput(user_Name, user_Email, user_Password)) {
+    //     if (checkEmail(user_Email, JSON.parse(localStorage.getItem("users")))) mailmsg.style.display = "block"
+    //     else {
+    //         localStorage.setItem("users", JSON.stringify(arrayOfUser));
+    //         localStorage.setItem("unknown", JSON.stringify(unknown));
+    //         //when click on get started will save data and directed the user to previous link
+    //         if (document.referrer == 'http://127.0.0.1:5500/login/login.html' || document.referrer == 'http://127.0.0.1:5500/home/home.html')
+    //             location.href = '../home/home.html'
+    //         else
+    //             location.href = document.referrer
+    //     }
+    // }
 }
+
 
 //DOM and fetch api so user can choose the preferred currency 
 
@@ -126,3 +148,4 @@ function showPassword() {
   }
   
   showPassword();
+

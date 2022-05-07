@@ -10,32 +10,51 @@ if (localStorage.getItem("users") == null) {
 
 
 let stupid = false;
-function logIn(){
+async function logIn(){
     
     let email = document.getElementById("email").value;
     let password = document.getElementById("password").value;
     let message = document.getElementById("incorrctMsg");
+    
 
     let existUser = false;
-    for(let i=0;i<users.length;i++){
-        if(email == users[i].Email && password == users[i].Password){
-            existUser = true;
-            users[i] = mergeProduct(users[i]);
-            localStorage.setItem('users', JSON.stringify(users));
-            break;
+    // for(let i=0;i<users.length;i++){
+    //     if(email == users[i].Email && password == users[i].Password){
+    //         existUser = true;
+    //         users[i] = mergeProduct(users[i]);
+    //         localStorage.setItem('users', JSON.stringify(users));
+    //         break;
+    //     }
+    // }
+    
+    // if(!existUser){
+    //     if(email == "" || password =="")
+    //     message.textContent = "Please fill empty fields";
+    //     else
+    //     message.textContent = "Incorrect email or password";
+    //     message.setAttribute('style','display: block; color: red;');   
+    // } 
+    
+    // else{
+    //     window.location.href='../home/home.html';  
+    // }
+
+    try {
+        const response = await fetch("http://127.0.0.1:3000/api/v1/auth/login", {
+            "method": "post",
+            "headers": {
+                "Content-Type": "application/json"
+            },
+            "body": JSON.stringify({"email":email,"password":password})
+        })
+        if(response.status == 200){
+            //let token = await response.json().token
+            console.log(await response.json().token)
+            //localStorage.setItem("token", JSON.stringify(token))
         }
-    }
-    
-    if(!existUser){
-        if(email == "" || password =="")
-        message.textContent = "Please fill empty fields";
-        else
-        message.textContent = "Incorrect email or password";
-        message.setAttribute('style','display: block; color: red;');   
-    } 
-    
-    else{
-        window.location.href='../home/home.html';  
+        
+    } catch (e) {
+        console.log("error", e.message)
     }
 }
 
