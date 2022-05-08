@@ -1,23 +1,30 @@
-let arrayOfUser = [{
-    Name: "User",
-    Email: "user@gmail.com",
-    Password: "123",
-    Currency: "USD",
-    Product: [],
-  }],
+// let arrayOfUser = [{
+//     Name: "User",
+//     Email: "user@gmail.com",
+//     Password: "123",
+//     Currency: "USD",
+//     Product: [],
+//   }],
+// import validator from 'validator';
+
     getStarted = document.getElementsByClassName("signupbtn")[0],
     msgEmpty = document.getElementById("msgEmpty"),
     input = Array.from(document.getElementsByTagName("input")),
-    mailmsg = document.getElementById("msgMail");
+    mailExistMsg = document.getElementById("msgExistMail");
+    mailIncorrectMsg = document.getElementById("msgIncorrectMail");
+    nameMsg = document.getElementById("msgName");
+    passMsg = document.getElementById("msgPass");
 
-let unknown = localStorage.getItem("unknown") === null ? [] : JSON.parse(localStorage.getItem("unknown"));
+// let unknown = localStorage.getItem("unknown") === null ? [] : JSON.parse(localStorage.getItem("unknown"));
 input.forEach(element => {
     element.addEventListener('change', removeAlert)
 });
-
 function removeAlert() {
     msgEmpty.style.display = "none"
-    mailmsg.style.display = "none"
+    mailExistMsg.style.display = "none"
+    mailIncorrectMsg.style.display = "none"
+    nameMsg.style.display = "none"
+    passMsg.style.display = "none"
 }
 
 function checkEmail(user_Email, arrayUser) {
@@ -33,13 +40,50 @@ function checkEmail(user_Email, arrayUser) {
     }
 }
 // if the input is empty a message will appear and data will not store.
-function checkEmptyInput(user_Name, user_Email, user_Password) {
-    if (user_Name == '' || user_Email == '' || user_Password == '') {
+function checkEmptyInput(name, email, password) {
+    if (name == '' || email == '' || password == '') {
         msgEmpty.style.display = "block";
         return true
     }
     return false
 }
+
+function IsValidData (name, email, password){
+    if(checkEmptyInput(name, email, password)) return;
+    IsValidName(name)
+    IsValidEmail(email)
+    isVaalidPassword(password)
+    return IsValidName(name) && IsValidEmail(email) && isVaalidPassword(password);
+}
+function IsValidName(name){
+    if(name.length >=3){
+        return true;
+    }
+    nameMsg.style.display = "block"
+    return false;
+    
+}
+function IsValidEmail(email){
+    let validRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+    if(email.match(validRegex) != null){
+        return true;
+    }
+    mailIncorrectMsg.style.display = "block"
+    return false;
+    
+}
+
+function isVaalidPassword(password){
+    let strongRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/;
+    if(password.match(strongRegex) != null){
+        return true;
+    }
+    passMsg.style.display = "block"
+    return false;
+}
+
+
+
 //the user's data save in local storage as array of obj. when click get started button
 getStarted.addEventListener('click', signUp);
 
@@ -59,6 +103,9 @@ async function signUp() {
         user_Password = document.getElementById("password").value,
         user_Currency = document.getElementById("currency").value;
 
+        IsValidData(user_Name,user_Email,user_Password)
+    if(checkEmptyInput(user_Name,user_Email,user_Password) && !IsValidData(user_Name,user_Email,user_Password))
+        return;
     user.username = user_Name
     user.email = user_Email
     user.password = user_Password
@@ -77,27 +124,13 @@ async function signUp() {
         })
         console.log(response)
         if(response.status == 409){
-            console.log("sdsd")
+            mailExistMsg.style.display = "block"
         }
     } catch (e) {
         console.log("error", e.message)
     }
     
-    //if the user re-enter same email amessage will appear and will not store.
-    // if (!checkEmptyInput(user_Name, user_Email, user_Password)) {
-    //     if (checkEmail(user_Email, JSON.parse(localStorage.getItem("users")))) mailmsg.style.display = "block"
-    //     else {
-    //         localStorage.setItem("users", JSON.stringify(arrayOfUser));
-    //         localStorage.setItem("unknown", JSON.stringify(unknown));
-    //         //when click on get started will save data and directed the user to previous link
-    //         if (document.referrer == 'http://127.0.0.1:5500/login/login.html' || document.referrer == 'http://127.0.0.1:5500/home/home.html')
-    //             location.href = '../home/home.html'
-    //         else
-    //             location.href = document.referrer
-    //     }
-    // }
 }
-
 
 //DOM and fetch api so user can choose the preferred currency 
 
@@ -144,8 +177,8 @@ function showPassword() {
       // toggle the eye slash icon
       const src= togglePassword.getAttribute('src')==='../assets/img/hideEye.svg'?'../assets/img/showEye.svg':'../assets/img/hideEye.svg';
       togglePassword.setAttribute('src',src);
-  };
-  }
+    };
+}
   
   showPassword();
 

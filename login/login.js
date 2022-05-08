@@ -27,17 +27,13 @@ async function logIn(){
     //     }
     // }
     
-    // if(!existUser){
-    //     if(email == "" || password =="")
-    //     message.textContent = "Please fill empty fields";
-    //     else
-    //     message.textContent = "Incorrect email or password";
-    //     message.setAttribute('style','display: block; color: red;');   
-    // } 
+    if(email == "" || password ==""){
+        message.textContent = "Please fill empty fields";
+        message.setAttribute('style','display: block;');   
+        return;
+    }
     
-    // else{
-    //     window.location.href='../home/home.html';  
-    // }
+
 
     try {
         const response = await fetch("http://127.0.0.1:3000/api/v1/auth/login", {
@@ -48,9 +44,13 @@ async function logIn(){
             "body": JSON.stringify({"email":email,"password":password})
         })
         if(response.status == 200){
-            //let token = await response.json().token
-            console.log(await response.json().token)
-            //localStorage.setItem("token", JSON.stringify(token))
+            let res = await response.json()
+            localStorage.setItem("token", JSON.stringify(res.token))
+            window.location.href='../home/home.html';  
+        }
+        if(response.status == 401 || response.status == 422){
+            message.textContent = "Incorrect email or password";
+            message.setAttribute('style','display: block;');  
         }
         
     } catch (e) {
