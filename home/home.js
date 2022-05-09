@@ -281,7 +281,7 @@ async function getCategoryData(apiCategory) {
   try {
     const response = await fetch(apiCategory)
     const data = await response.json()
-
+    console.log(data)
     createProByCategory(data);
 
   } catch (e) {
@@ -434,13 +434,27 @@ let account = document.getElementById('account'),
   wrapAccount = document.getElementById('wrapAccount'),
   logout = document.getElementById('logout'),
   arrowIcon = document.getElementById('arrowIcon');
-if (unknown.Name == '') {
-  account.textContent = 'Sign up'
-  arrowIcon.style.display = 'none'
-} else {
-  account.textContent = unknown.Name
-  arrowIcon.style.display = 'inline-block'
-}
+
+(async function getUser() {
+  try {
+    const response = await fetch("http://127.0.0.1:3000/api/v1/auth/user",{
+      "method": "get",
+      "headers": {
+          "Content-Type": "application/json",
+          "authorization": JSON.parse(localStorage.getItem('token'))
+      },
+  })
+    const data = await response.json()
+    currentUser = data;
+    console.log(currentUser)
+    account.textContent = currentUser.username
+    arrowIcon.style.display = 'inline-block'
+
+  } catch (e) {
+    console.log("error", e.message)
+  }
+})()
+
 
 //add link for createAccount page
 wrapAccount.addEventListener('click', () => {
@@ -550,3 +564,4 @@ function search() {
     itemsSection.appendChild(lists)
   }, timerWord)
 }
+
