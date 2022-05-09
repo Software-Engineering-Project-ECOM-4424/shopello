@@ -52,9 +52,6 @@ if (localStorage.getItem("unknown") == null) {
   localStorage.setItem("unknown", JSON.stringify(unknown));
 }
 
-//get unknown object into loacl storage
-unknown = localStorage.getItem("unknown") === null ? [] : JSON.parse(localStorage.getItem("unknown"));
-
 //fetch currencies and exchange prices 
 let Currency,
   rate = 1,
@@ -93,13 +90,13 @@ const listOfPopulore = document.getElementById('listOfPopulore'),
   listOfOffers = document.getElementById('listOfOffers'),
   listOfRecommeded = document.getElementById('listOfRecommeded'),
   main = document.getElementById('main'),
-  apiCate = `https://fakestoreapi.com/products/categories`,
-  baseApi = "https://fakestoreapi.com/products?limit=10";
+  cateApi = 'http://127.0.0.1:3000/api/v1/HomePage/category-list',
+  productsApi = "http://127.0.0.1:3000/api/v1/HomePage/products";
 
 //fetch api for categories
 (async function getData() {
   try {
-    const response = await fetch(apiCate)
+    const response = await fetch(cateApi)
     const data = await response.json()
     createCate(data)
 
@@ -113,7 +110,7 @@ function createCate(data) {
   data.forEach(el => {
     const eleOfTag = document.createElement('li');
     eleOfTag.setAttribute('class', 'item')
-    eleOfTag.innerText = `${el}`
+    eleOfTag.innerText = `${el.name}`
     eleOfTag.addEventListener('click', getProductByCate)
     tags.appendChild(eleOfTag)
   })
@@ -124,7 +121,8 @@ let dataForSearch;
 setTimeout(() => {
   (async function getData() {
     try {
-      const response = await fetch(baseApi),
+      // const response = await fetch('https://fakestoreapi.com/products?limit=10'),
+      const response = await fetch(productsApi),
         data = await response.json();
       dataForSearch = data;
       createPro(data);
@@ -140,8 +138,7 @@ setTimeout(() => {
 //create dom for listOfPopulore
 function createPro(data) {
   data.forEach(product => {
-
-    let objTitle = product.title,
+    let objTitle = product.productname,
       readyTitle = objTitle.split(' ').slice(0, 3).join(' '),
       exPrice = product.price * rate,
       objPrice = exPrice.toFixed(2),
@@ -166,7 +163,7 @@ function createPro(data) {
 
     el.setAttribute("class", "item")
     proImg.setAttribute("class", "imgOfPopulore")
-    proImg.setAttribute('src', `${objImage}`)
+    proImg.setAttribute('src', `http://127.0.0.1:3000/${objImage}`)
     textAndImg.setAttribute('class', 'wrapOfText')
     proTitle.setAttribute('class', 'title')
     proTitle.setAttribute('onclick', `getDataDetails(${objid},displayDetails)`)
@@ -180,14 +177,15 @@ function createPro(data) {
   });
 }
 
+
+
 //create dom for listOfOffers
 function createOffer(data) {
   data.forEach(product => {
 
     let objImage = product.image,
-      objCate = product.category,
+      objCate = product.categoryname,
       objid = product.id;
-
     const elemOfOffer = document.createElement('li'),
       offerCate = document.createElement('img'),
       offSpan = document.createElement('span'),
@@ -209,12 +207,15 @@ function createOffer(data) {
     listOfOffers.appendChild(elemOfOffer)
 
     elemOfOffer.setAttribute("class", "item")
+    
+    
+    // console.log(x)
     offerCate.setAttribute('src', `../assets/img/${objCate}.svg`)
     offerCate.setAttribute("class", "imgOfTag")
     offSpan.setAttribute('class', 'nameOfTag')
     wrapOfOffer.setAttribute('class', 'wrapOfOffer')
     wrapOfDesc.setAttribute('class', 'wrapOfDesc')
-    offImg.setAttribute('src', `${objImage}`)
+    offImg.setAttribute('src', `http://127.0.0.1:3000/${objImage}`)
     offImg.setAttribute('onclick', `getDataDetails(${objid}, displayDetails)`)
     disc.setAttribute('class', 'disc')
 
@@ -230,7 +231,7 @@ function createOffer(data) {
 function createRecomeded(data) {
   data.forEach(product => {
 
-    let objTitle = product.title,
+    let objTitle = product.productname,
       readyTitle = objTitle.split(' ').slice(0, 2).join(' '),
       exPrice = product.price * rate,
       objPrice = exPrice.toFixed(2),
@@ -253,7 +254,7 @@ function createRecomeded(data) {
 
     elemOfRecom.setAttribute("class", "item")
     imgOfRecom.setAttribute("class", "imgOfRecom")
-    imgOfRecom.setAttribute('src', `${objImage}`)
+    imgOfRecom.setAttribute('src', `http://127.0.0.1:3000/${objImage}`)
     wrapOfTitleAndPrice.setAttribute('class', 'wrapOfTitleAndPrice')
     proTitle.setAttribute('class', 'title')
     proTitle.setAttribute('onclick', `getDataDetails(${objid},displayDetails)`)
@@ -446,7 +447,6 @@ let account = document.getElementById('account'),
   })
     const data = await response.json()
     currentUser = data;
-    console.log(currentUser)
     account.textContent = currentUser.username
     arrowIcon.style.display = 'inline-block'
 
