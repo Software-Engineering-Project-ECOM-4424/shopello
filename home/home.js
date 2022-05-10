@@ -270,19 +270,14 @@ function createRecomeded(data) {
 }
 
 //get product by category
-function getProductByCate(e) {
+async function getProductByCate(e) {
   let category = e.target.textContent;
-  let apiCategory = `https://fakestoreapi.com/products/category/${category}`
+  let apiCategory = `http://127.0.0.1:3000/api/v1/HomePage/products/category?category_name=${category}`
   main.style.display = 'none'
-  getCategoryData(apiCategory);
-}
-
-//get data from apiCategory
-async function getCategoryData(apiCategory) {
+  // getCategoryData(apiCategory);
   try {
     const response = await fetch(apiCategory)
     const data = await response.json()
-    console.log(data)
     createProByCategory(data);
 
   } catch (e) {
@@ -306,7 +301,7 @@ function createProByCategory(data) {
   mainOfCategory.innerHTML = "";
   data.forEach(product => {
 
-    let objTitle = product.title,
+    let objTitle = product.productname,
       readyTitle = objTitle.split(' ').slice(0, 3).join(' '),
       objPrice = product.price,
       objImage = product.image,
@@ -336,7 +331,7 @@ function createProByCategory(data) {
     elemOfCategory.setAttribute("class", "item")
     ulOfCategory.setAttribute("class", "listOfPopulore items")
     proImgOfCategory.setAttribute("class", "imgOfPopulore")
-    proImgOfCategory.setAttribute('src', `${objImage}`)
+    proImgOfCategory.setAttribute('src', `http://127.0.0.1:3000/${objImage}`)
     textAndImgOfCategory.setAttribute('class', 'wrapOfText')
     proTitleOfCategory.setAttribute('class', 'title')
     proTitleOfCategory.setAttribute('onclick', `getDataDetails(${objid},displayDetails)`)
