@@ -1,3 +1,4 @@
+
 let add = document.getElementById('plus');
 let remove = document.getElementById('minus');
 let price = document.getElementById('originalPice');
@@ -11,6 +12,22 @@ let buy = document.getElementById('buy');
 let addCart = document.getElementById('add');
 let currencySymbol = document.getElementById('priceTag');
 let buyMsg = document.getElementById('buyMsg');
+
+
+let id = document.location.href.split('=')[1];
+(async function getDataDetails() {
+  
+  let productDetails = `http://127.0.0.1:3000/api/v1/products/${id}`
+  try {
+    const response = await fetch(productDetails)
+    const data = await response.json()
+    console.log(data)
+    displayDetails(data);
+  } catch (e) {
+    console.log("error", e.message)
+  }
+})();
+
 
 let unknown = localStorage.getItem("unknown") === null ? [] : JSON.parse(localStorage.getItem("unknown"));
 
@@ -49,12 +66,11 @@ if (unknown.Currency == '') {
 
 let priceTotal
 let currencyDiv = document.createElement('div')
-// to get the producat information and display iton the page.
-let data = localStorage.getItem("data") === null ? [] : JSON.parse(localStorage.getItem("data"));
+
 
 function displayDetails(data) {
   currencySymbol.textContent = symbol
-  image.setAttribute('src', `${data.image}`)
+  image.setAttribute('src', `http://127.0.0.1:3000/${data.image}`)
   category.textContent = data.category
   title.textContent = data.title
   description.textContent = data.description
@@ -88,47 +104,17 @@ remove.addEventListener('click', () => {
 })
 
 //add the product into object and storage it into loacal storage
-function addToCart(data) {
+function addToCart() {
   unknown = localStorage.getItem("unknown") === null ? [] : JSON.parse(localStorage.getItem("unknown"));
 
-  let newProduct = {
-    id: "",
-    title: "",
-    description: "",
-    category: "",
-    image: "",
-    price: "",
-    quantity: ""
-  }
 
-  newProduct.id = data.id
-  newProduct.title = data.title
-  newProduct.description = data.description
-  newProduct.category = data.category
-  newProduct.image = data.image
-  newProduct.price = data.price
-  newProduct.quantity = 1
-
-  if (unknown.Product.length == 0) {
-    unknown.Product.push(newProduct)
-  } else {
-    let flag = false
-    for (let index = 0; index < unknown.Product.length; index++) {
-      if (unknown.Product[index].id == newProduct.id) {
-        unknown.Product[index].quantity += number;
-        flag = false
-        break;
-      } else {
-        flag = true
-      }
-    }
-    if (flag) unknown.Product.push(newProduct)
-  }
-  localStorage.setItem("unknown", JSON.stringify(unknown));
+  let cart = localStorage.getItem("cart") === null ? [] : JSON.parse(localStorage.getItem("cart"));
+  cart.push({id:parseInt(id),quantity:number})
+  localStorage.setItem("cart", JSON.stringify(cart));
 }
 
 addCart.addEventListener('click', () => {
-  addToCart(data)
+  addToCart()
   location.href = '../cart/cart.html'
 })
 
@@ -139,7 +125,3 @@ buy.addEventListener('click', () => {
   } else
     buyMsg.style.display = 'block'
 })
-
-setTimeout(() => {
-  displayDetails(data)
-}, timer)

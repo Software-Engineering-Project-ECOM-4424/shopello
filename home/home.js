@@ -166,7 +166,7 @@ function createPro(data) {
     proImg.setAttribute('src', `http://127.0.0.1:3000/${objImage}`)
     textAndImg.setAttribute('class', 'wrapOfText')
     proTitle.setAttribute('class', 'title')
-    proTitle.setAttribute('onclick', `getDataDetails(${objid},displayDetails)`)
+    proTitle.setAttribute('onclick', `displayDetails(${objid})`)
     proPrice.setAttribute('class', 'price')
     cartImg.setAttribute('src', '../assets/img/cart with plus.svg')
     cartImg.setAttribute('onclick', `getDataDetails(${objid}, addToCart)`)
@@ -356,9 +356,10 @@ function showHomePage() {
 
 //get details data of product by id
 async function getDataDetails(id, fun) {
-  let apiDetails = `https://fakestoreapi.com/products/${id}`
+  console.log(id)
+  let productDetails = `http://127.0.0.1:3000/api/v1/products/1/${id}`
   try {
-    const response = await fetch(apiDetails)
+    const response = await fetch(productDetails)
     const data = await response.json()
 
     fun(data);
@@ -368,11 +369,8 @@ async function getDataDetails(id, fun) {
   }
 }
 
-function displayDetails(data) {
-  localStorage.getItem("data") === null ? [] : JSON.parse(localStorage.getItem("data"));
-  localStorage.setItem('data', JSON.stringify(''))
-  localStorage.setItem('data', JSON.stringify(data))
-  location.href = '../details/details.html'
+function displayDetails(id) {
+  location.href = `../details/details.html?id=${id}`
 }
 
 //add the product into object and storage it into loacal storage
