@@ -15,26 +15,12 @@ async function logIn(){
     let email = document.getElementById("email").value;
     let password = document.getElementById("password").value;
     let message = document.getElementById("incorrctMsg");
-    
 
-    let existUser = false;
-    // for(let i=0;i<users.length;i++){
-    //     if(email == users[i].Email && password == users[i].Password){
-    //         existUser = true;
-    //         users[i] = mergeProduct(users[i]);
-    //         localStorage.setItem('users', JSON.stringify(users));
-    //         break;
-    //     }
-    // }
-    
     if(email == "" || password ==""){
         message.textContent = "Please fill empty fields";
         message.setAttribute('style','display: block;');   
         return;
     }
-    
-
-
     try {
         const response = await fetch("http://127.0.0.1:3000/api/v1/auth/login", {
             "method": "post",

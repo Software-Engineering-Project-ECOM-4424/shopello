@@ -36,6 +36,7 @@ let Currency,
   rate = 1,
   symbol = '$',
   timer;
+  /*
 if (unknown.Currency == '') {
   Currency = 'USD'
   timer = 0
@@ -63,7 +64,7 @@ if (unknown.Currency == '') {
   })()
 }
 
-
+*/
 let priceTotal
 let currencyDiv = document.createElement('div')
 
@@ -105,11 +106,16 @@ remove.addEventListener('click', () => {
 
 //add the product into object and storage it into loacal storage
 function addToCart() {
-  unknown = localStorage.getItem("unknown") === null ? [] : JSON.parse(localStorage.getItem("unknown"));
-
-
   let cart = localStorage.getItem("cart") === null ? [] : JSON.parse(localStorage.getItem("cart"));
-  cart.push({id:parseInt(id),quantity:number})
+  let i=0;
+  for(i=0;i<cart.length;i++){
+    if(cart[i].id == id){
+      cart[i].quantity++;
+      break;
+    }
+  }
+  if(i == cart.length)
+    cart.push({id:parseInt(id),quantity:number})
   localStorage.setItem("cart", JSON.stringify(cart));
 }
 

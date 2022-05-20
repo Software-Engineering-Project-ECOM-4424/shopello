@@ -39,24 +39,14 @@ const move = (e) => {
   });
 })();
 
-//set unknown object into loacl storage
-let unknown = {
-  Name: "",
-  Email: "",
-  Password: "",
-  Currency: "",
-  Product: [],
-};
-
-if (localStorage.getItem("unknown") == null) {
-  localStorage.setItem("unknown", JSON.stringify(unknown));
-}
 
 //fetch currencies and exchange prices 
+
 let Currency,
   rate = 1,
   symbol = '$',
   timer;
+  /*
 if (unknown.Currency == '') {
   Currency = 'USD'
   timer = 0
@@ -82,7 +72,7 @@ if (unknown.Currency == '') {
       console.log("error", e.message)
     }
   })()
-}
+}*/
 
 //get element by id form html tags by getElementById and declared the apis
 const listOfPopulore = document.getElementById('listOfPopulore'),
@@ -164,20 +154,19 @@ function createPro(data) {
     el.setAttribute("class", "item")
     proImg.setAttribute("class", "imgOfPopulore")
     proImg.setAttribute('src', `http://127.0.0.1:3000/${objImage}`)
+    proImg.setAttribute('onclick', `displayDetails(${objid})`)
     textAndImg.setAttribute('class', 'wrapOfText')
     proTitle.setAttribute('class', 'title')
     proTitle.setAttribute('onclick', `displayDetails(${objid})`)
     proPrice.setAttribute('class', 'price')
     cartImg.setAttribute('src', '../assets/img/cart with plus.svg')
-    cartImg.setAttribute('onclick', `getDataDetails(${objid}, addToCart)`)
+    cartImg.setAttribute('onclick', `addToCart(${objid})`)
 
     proTitle.innerText = `${readyTitle}`
     proPrice.innerText = `${symbol} ${objPrice}`
 
   });
 }
-
-
 
 //create dom for listOfOffers
 function createOffer(data) {
@@ -217,6 +206,7 @@ function createOffer(data) {
     wrapOfDesc.setAttribute('class', 'wrapOfDesc')
     offImg.setAttribute('src', `http://127.0.0.1:3000/${objImage}`)
     offImg.setAttribute('onclick', `getDataDetails(${objid}, displayDetails)`)
+    offImg.setAttribute('onclick', `displayDetails(${objid})`)
     disc.setAttribute('class', 'disc')
 
     offSpan.innerText = `${objCate}`
@@ -255,9 +245,11 @@ function createRecomeded(data) {
     elemOfRecom.setAttribute("class", "item")
     imgOfRecom.setAttribute("class", "imgOfRecom")
     imgOfRecom.setAttribute('src', `http://127.0.0.1:3000/${objImage}`)
+    imgOfRecom.setAttribute('onclick', `displayDetails(${objid})`)
     wrapOfTitleAndPrice.setAttribute('class', 'wrapOfTitleAndPrice')
     proTitle.setAttribute('class', 'title')
-    proTitle.setAttribute('onclick', `getDataDetails(${objid},displayDetails)`)
+    proTitle.setAttribute('onclick', `displayDetails(${objid})`)
+
     proPrice.setAttribute('class', 'price')
     imgCart.setAttribute('class', 'addToCart')
     imgCart.setAttribute('src', '../assets/img/cart with plus.svg')
@@ -332,9 +324,10 @@ function createProByCategory(data) {
     ulOfCategory.setAttribute("class", "listOfPopulore items")
     proImgOfCategory.setAttribute("class", "imgOfPopulore")
     proImgOfCategory.setAttribute('src', `http://127.0.0.1:3000/${objImage}`)
+    proImgOfCategory.setAttribute('onclick', `displayDetails(${objid})`)
     textAndImgOfCategory.setAttribute('class', 'wrapOfText')
     proTitleOfCategory.setAttribute('class', 'title')
-    proTitleOfCategory.setAttribute('onclick', `getDataDetails(${objid},displayDetails)`)
+    proTitleOfCategory.setAttribute('onclick', `displayDetails(${objid})`)
     proPriceOfCategory.setAttribute('class', 'price')
     cartImgOfCategory.setAttribute('src', '../assets/img/cart with plus.svg')
     cartImgOfCategory.setAttribute('onclick', `getDataDetails(${objid}, addToCart)`)
@@ -357,7 +350,7 @@ function showHomePage() {
 //get details data of product by id
 async function getDataDetails(id, fun) {
   console.log(id)
-  let productDetails = `http://127.0.0.1:3000/api/v1/products/1/${id}`
+  let productDetails = `http://127.0.0.1:3000/api/v1/products/${id}`
   try {
     const response = await fetch(productDetails)
     const data = await response.json()
@@ -374,53 +367,32 @@ function displayDetails(id) {
 }
 
 //add the product into object and storage it into loacal storage
-function addToCart(data) {
-  unknown = localStorage.getItem("unknown") === null ? [] : JSON.parse(localStorage.getItem("unknown"));
-
-  let newProduct = {
-    id: "",
-    title: "",
-    description: "",
-    category: "",
-    image: "",
-    price: "",
-    quantity: ""
-  }
-
-  newProduct.id = data.id
-  newProduct.title = data.title
-  newProduct.description = data.description
-  newProduct.category = data.category
-  newProduct.image = data.image
-  newProduct.price = data.price
-  newProduct.quantity = 1
-
-  if (unknown.Product.length == 0) {
-    unknown.Product.push(newProduct)
-  } else {
-    let flag = false
-    for (let index = 0; index < unknown.Product.length; index++) {
-      if (unknown.Product[index].id == newProduct.id) {
-        unknown.Product[index].quantity += 1;
-        flag = false
-        break;
-      } else {
-        flag = true
-      }
+function addToCart(id) {
+  console.log(id)
+  let cart = localStorage.getItem("cart") === null ? [] : JSON.parse(localStorage.getItem("cart"));
+  let i=0;
+  for(i=0;i<cart.length;i++){
+    if(cart[i].id == id){
+      cart[i].quantity++;
+      break;
     }
-    if (flag) unknown.Product.push(newProduct)
   }
-  localStorage.setItem("unknown", JSON.stringify(unknown));
+  if(i == cart.length)
+    cart.push({id:parseInt(id),quantity:1})
+  localStorage.setItem("cart", JSON.stringify(cart));
+
   showCount()
 }
 
 //show the count of product in cart
 function showCount() {
   let count = document.getElementById('count')
-  if (unknown.Product.length > 0)
+  let cart = JSON.parse(localStorage.getItem('cart'))
+  if (cart.length > 0){
     count.style.display = 'block'
-  count.textContent = unknown.Product.length;
-}
+    count.textContent = cart.length;
+  }
+}  
 showCount()
 
 //change the name depend on some state
@@ -438,10 +410,16 @@ let account = document.getElementById('account'),
           "authorization": JSON.parse(localStorage.getItem('token'))
       },
   })
-    const data = await response.json()
-    currentUser = data;
-    account.textContent = currentUser.username
-    arrowIcon.style.display = 'inline-block'
+    console.log(response.status )
+    arrowIcon.style.display = 'none'
+    if(!(response.status == 401)){
+      console.log(response.status )
+      const data = await response.json()
+      currentUser = data;
+      account.textContent = currentUser.username
+      arrowIcon.style.display = 'inline-block'
+    }
+
 
   } catch (e) {
     console.log("error", e.message)
@@ -464,16 +442,11 @@ logout.addEventListener('click', logOutFunction)
 
 //logout function
 function logOutFunction() {
+  localStorage.setItem("token", "");
   logout.classList.toggle('activeLogOut')
   arrowIcon.classList.toggle('rotateIcon')
   arrowIcon.style.display = 'none'
   account.textContent = 'Sign up'
-  unknown.Currency = ''
-  unknown.Name = ''
-  unknown.Email = ''
-  unknown.Password = ''
-  unknown.Product = []
-  localStorage.setItem("unknown", JSON.stringify(unknown));
   showCount()
 }
 

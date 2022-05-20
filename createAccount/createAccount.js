@@ -1,21 +1,13 @@
-// let arrayOfUser = [{
-//     Name: "User",
-//     Email: "user@gmail.com",
-//     Password: "123",
-//     Currency: "USD",
-//     Product: [],
-//   }],
-// import validator from 'validator';
 
-    getStarted = document.getElementsByClassName("signupbtn")[0],
-    msgEmpty = document.getElementById("msgEmpty"),
-    input = Array.from(document.getElementsByTagName("input")),
-    mailExistMsg = document.getElementById("msgExistMail");
-    mailIncorrectMsg = document.getElementById("msgIncorrectMail");
-    nameMsg = document.getElementById("msgName");
-    passMsg = document.getElementById("msgPass");
 
-// let unknown = localStorage.getItem("unknown") === null ? [] : JSON.parse(localStorage.getItem("unknown"));
+getStarted = document.getElementsByClassName("signupbtn")[0],
+msgEmpty = document.getElementById("msgEmpty"),
+input = Array.from(document.getElementsByTagName("input")),
+mailExistMsg = document.getElementById("msgExistMail");
+mailIncorrectMsg = document.getElementById("msgIncorrectMail");
+nameMsg = document.getElementById("msgName");
+passMsg = document.getElementById("msgPass");
+
 input.forEach(element => {
     element.addEventListener('change', removeAlert)
 });
@@ -27,19 +19,7 @@ function removeAlert() {
     passMsg.style.display = "none"
 }
 
-function checkEmail(user_Email, arrayUser) {
-    let state = false
-    if (arrayUser.length > 0) {
-        for (let index = 0; index < arrayUser.length; index++) {
-            if (arrayUser[index].Email == user_Email) {
-                state = true
-                break;
-            }
-        }
-        return state
-    }
-}
-// if the input is empty a message will appear and data will not store.
+
 function checkEmptyInput(name, email, password) {
     if (name == '' || email == '' || password == '') {
         msgEmpty.style.display = "block";
@@ -84,12 +64,9 @@ function isVaalidPassword(password){
 
 
 
-//the user's data save in local storage as array of obj. when click get started button
 getStarted.addEventListener('click', signUp);
 
-// if (localStorage.getItem("users") == null) {
-//     localStorage.setItem("users", JSON.stringify(arrayOfUser))
-// }
+
 
 async function signUp() {
     let user = {
@@ -110,9 +87,7 @@ async function signUp() {
     user.email = user_Email
     user.password = user_Password
     user.currency = user_Currency
-    
-    // arrayOfUser = localStorage.getItem("users") === null ? [] : JSON.parse(localStorage.getItem("users"));
-    // arrayOfUser.push(unknown);
+
     try {
         const response = await fetch("http://127.0.0.1:3000/api/v1/auth/signup", {
             "method": "post",
@@ -126,15 +101,14 @@ async function signUp() {
         if(response.status == 409){
             mailExistMsg.style.display = "block"
         }
+        window.location.href='../login/login.html';
     } catch (e) {
         console.log("error", e.message)
     }
     
 }
 
-//DOM and fetch api so user can choose the preferred currency 
 
-//getElementById("currency")
 let selectCurrency = document.getElementById("currency");
 //fetch api
 (async function getData() {

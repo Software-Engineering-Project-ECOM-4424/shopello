@@ -2,7 +2,6 @@ let cartList = document.getElementById("cartList");
 let remove_All = document.getElementById("removeAll");
 let unKnown_user = JSON.parse(localStorage.getItem("unknown"));
 let cart = JSON.parse(localStorage.getItem("cart"));
-let products = unKnown_user.Product;
 let count = document.getElementById("count");
 let price = document.getElementsByClassName('price')[0];
 let cartTop = document.getElementsByClassName('cart-top')[0];
@@ -16,29 +15,7 @@ let totalPrice = 0;
 let Currency,
   rate = 1,
   symbol = '';
-if (unKnown_user.Currency == '') Currency = 'USD'
-else {
-  Currency = unKnown_user.Currency
-  symbol = Currency
-  let from = "USD",
-    to = Currency;
 
-  (async function getData() {
-    try {
-      const response = await fetch(`https://currency-exchange.p.rapidapi.com/exchange?to=${to}&from=${from}&q=1.0`, {
-        "method": "GET",
-        "headers": {
-          "x-rapidapi-key": "6155594c89msh387173eac4635c0p108063jsnee1a9a20e441",
-          "x-rapidapi-host": "currency-exchange.p.rapidapi.com"
-        }
-      })
-      const data = await response.json()
-      rate = data;
-    } catch (e) {
-      console.log("error", e.message)
-    }
-  })()
-}
 price.textContent = "$ " +(totalPrice * rate).toFixed(2);
 
 createList();
@@ -54,9 +31,8 @@ async function createList(){
     cartTop.setAttribute('style','display: none;')
   }
   cartList.innerHTML = '';
-  
+  totalPrice = 0;
   for (let i = 0; i < cart.length; i++) {
-    
     if (cart[i].id == "") continue;
     let productDetails = `http://127.0.0.1:3000/api/v1/products/${cart[i].id}`
     
@@ -168,14 +144,6 @@ function removeAll(){
   createList();
 }
 
-// async function totalPrice(){
-//   let total = 0;
-//   for(let i=0;i<cart.length;i++){
-//     // total += (parseFloat(cart[i].price) * parseInt(cart[i].quantity));
-//   }
-//   return symbol+ " " +(total * rate).toFixed(2) ;
-// }
-
 
 window.onclick = function (event) {
   if (event.target.getAttribute("id").split("#")[0] == "plus") {
@@ -218,22 +186,34 @@ function decrement(num) {
 }
 
 
-// function getIndexOfProduct(id){
-//   for (let i = 0; i < cart.length; i++) {
-//     if(id == cart[i].id)
-//       return i;
-    
-//   }
-// }
-
 let buy = document.getElementById('buy');
 
 buy.addEventListener('click', ()=>{
-  let unknown = localStorage.getItem("unknown") === null ? [] : JSON.parse(localStorage.getItem("unknown"));
-  if(unknown.Name === ''){
-      window.location.href = '../createAccount/createAccount.html'
+  if(isUser()){
+    buyMsg.style.display = 'block'
+    cart = [];
+    localStorage.setItem('cart',JSON.stringify(cart));
   }
   else
-  products = []
-  buyMsg.style.display = 'block'
+    window.location.href = '../createAccount/createAccount.html'
+
 })
+
+
+async function isUser() {
+  try {
+    const response = await fetch("http://127.0.0.1:3000/api/v1/auth/user",{
+      "method": "get",
+      "headers": {
+          "Content-Type": "application/json",
+          "authorization": JSON.parse(localStorage.getItem('token'))
+      },
+  })
+    console.log(response.status)
+    return response.status == 200;
+
+
+  } catch (e) {
+    console.log("error", e.message)
+  }
+}
