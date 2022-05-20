@@ -199,11 +199,11 @@ html,body{
     margin-left: 1rem;
     display: none;
 }
-@media(min-width: 600px) {
+@media(min-width: 1000px) {
     body{
         display: flex;
-        justify-content:flex-end;
-        background-color: rgba(0, 0, 0, 0.3) ;
+        justify-content: center;
+        /* background-color: rgba(0, 0, 0, 0.3) ; */
     }
     .back {
         background-color: rgba(0, 0, 0, 0.3);

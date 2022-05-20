@@ -402,6 +402,10 @@ let account = document.getElementById('account'),
   arrowIcon = document.getElementById('arrowIcon');
 
 (async function getUser() {
+  if(localStorage.getItem('token') == ''){
+    arrowIcon.style.display = 'none'
+    return;
+  }
   try {
     const response = await fetch("http://127.0.0.1:3000/api/v1/auth/user",{
       "method": "get",
@@ -410,8 +414,8 @@ let account = document.getElementById('account'),
           "authorization": JSON.parse(localStorage.getItem('token'))
       },
   })
-    console.log(response.status )
     arrowIcon.style.display = 'none'
+    
     if(!(response.status == 401)){
       console.log(response.status )
       const data = await response.json()
@@ -465,28 +469,44 @@ const wrapTags = document.getElementById('wrapTags'),
 lists.setAttribute('class', 'itemsSearch')
 searchInput.addEventListener('keyup', search)
 
-//fetch translate api 
+
+// let engWord = '';
 // async function getDataTranslate(arabicWord) {
 //   try {
 //     const response = await fetch(`https://api.mymemory.translated.net/get?q=${arabicWord}&langpair=ar%7Cen-US%22`)
-//     const dataWord = await response.json()
-//     getEnglishWord(dataWord)
+//     const data = await response.json()
+//     engWord = await data.matches[0].translation
+    
+//     return engWord;
 //   } catch (e) {
 //     console.log("error", e.message)
 //   }
 // }
+// console.log(getDataTranslate("رجل"))
+// console.log(engWord)
 
-// //get translated Word
-// let translatedWord;
+async function getDataTranslate(arabicWord) {
+  try {
+    const response = await fetch(`https://api.mymemory.translated.net/get?q=${arabicWord}&langpair=ar%7Cen-US%22`)
+    const dataWord = await response.json()
+    getEnglishWord(dataWord)
+  } catch (e) {
+    console.log("error", e.message)
+  }
+}
 
-// function getEnglishWord(dataWord) {
-//   translatedWord = dataWord.matches[0].translation
-// }
+//get translated Word
+let translatedWord;
 
+function getEnglishWord(dataWord) {
+  translatedWord = dataWord.matches[0].translation
+}
+
+getDataTranslate("رجل")
 //search function
 
 let notfound = document.getElementById('notfound');
-async function searchnn() {
+async function search() {
   if(searchInput.value == '' || onlySpaces(searchInput.value)){
     itemsSection.style.display = 'none'
     return;

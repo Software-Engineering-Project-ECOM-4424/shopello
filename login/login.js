@@ -1,12 +1,7 @@
 
 let loginBtn = document.getElementsByClassName("login-btn")[0];
-let users = JSON.parse(localStorage.getItem('users'));
 
 loginBtn.addEventListener('click', logIn);
-let arrayOfUser = [];
-if (localStorage.getItem("users") == null) {
-    localStorage.setItem("users", JSON.stringify(arrayOfUser))
-}
 
 
 let stupid = false;

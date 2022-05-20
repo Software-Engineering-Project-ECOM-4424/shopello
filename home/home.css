@@ -220,7 +220,7 @@ h2 {
 
 .listOfPopulore {
   display: grid;
-  grid-template-columns: repeat(10, 300px);
+  grid-template-columns: repeat(20, 300px);
   grid-gap: 16px;
   overflow-x: auto;
   width: 100%;
@@ -269,7 +269,7 @@ h2 {
 
 .listOfOffers {
   display: grid;
-  grid-template-columns: repeat(10, 300px);
+  grid-template-columns: repeat(20, 300px);
   overflow-x: auto;
   width: 100%;
   padding-top: 15px;
@@ -332,7 +332,7 @@ h2 {
 
 .listOfRecommeded {
   display: grid;
-  grid-template-columns: repeat(10, 300px);
+  grid-template-columns: repeat(20, 300px);
   overflow-x: auto;
   width: 100%;
   grid-gap: 16px;
