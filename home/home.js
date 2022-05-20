@@ -463,44 +463,37 @@ const wrapTags = document.getElementById('wrapTags'),
   lists = document.createElement('ul');
 
 lists.setAttribute('class', 'itemsSearch')
-searchInput.addEventListener('keyup', search)
+searchInput.addEventListener('keyup', searchnn)
 
 //fetch translate api 
-async function getDataTranslate(arabicWord) {
-  try {
-    const response = await fetch(`https://api.mymemory.translated.net/get?q=${arabicWord}&langpair=ar%7Cen-US%22`)
-    const dataWord = await response.json()
-    getEnglishWord(dataWord)
-  } catch (e) {
-    console.log("error", e.message)
-  }
-}
+// async function getDataTranslate(arabicWord) {
+//   try {
+//     const response = await fetch(`https://api.mymemory.translated.net/get?q=${arabicWord}&langpair=ar%7Cen-US%22`)
+//     const dataWord = await response.json()
+//     getEnglishWord(dataWord)
+//   } catch (e) {
+//     console.log("error", e.message)
+//   }
+// }
 
-//get translated Word
-let translatedWord;
+// //get translated Word
+// let translatedWord;
 
-function getEnglishWord(dataWord) {
-  translatedWord = dataWord.matches[0].translation
-}
+// function getEnglishWord(dataWord) {
+//   translatedWord = dataWord.matches[0].translation
+// }
 
 //search function
 function search() {
-
-  let arabic = /[\u0600-\u06FF\u0750-\u077F]/,
-    word = searchInput.value,
-    found = true,
-    searchValue,
-    timerWord;
-
-  if (arabic.test(word)) {
-    timerWord = 1000
-    getDataTranslate(word)
-    searchValue = translatedWord
-  } else {
     searchValue = searchInput.value
     timerWord = 0
-  }
-
+    let notfound = document.getElementById('notfound')
+    itemsSection.style.display = 'block'
+    wrapTags.style.display = 'none'
+    main.style.display = 'none'
+    notfound.style.display = 'flex'
+  
+/*
   setTimeout(() => {
     itemsSection.style.display = 'block'
     lists.textContent = ''
@@ -528,6 +521,53 @@ function search() {
       }
     }
     itemsSection.appendChild(lists)
-  }, timerWord)
+  }, timerWord)\
+  */
+}
+let notfound = document.getElementById('notfound');
+async function searchnn() {
+  if(searchInput.value == '' || onlySpaces(searchInput.value)){
+    itemsSection.style.display = 'none'
+    return;
+  } 
+  try {
+    const response = await fetch(`http://127.0.0.1:3000/api/v1/HomePage/search?query=${searchInput.value}`,{
+      "method": "get",
+      "headers": {
+          "Content-Type": "application/json",
+      },
+    })
+    const data = await response.json()
+    itemsSection.style.display = 'block'
+    lists.textContent = ''
+    console.log(data)
+    if(response.status == 500){
+      itemsSection.style.display = 'block'
+      wrapTags.style.display = 'none'
+      main.style.display = 'none'
+      notfound.style.display = 'flex'
+    }
+    else{
+      data.forEach(product =>{
+        wrapTags.style.display = 'flex'
+          main.style.display = 'block'
+          notfound.style.display = 'none'
+          const list = document.createElement('li')
+          list.textContent = product.productname.split(' ').splice(0, 5).join(' ')
+          list.setAttribute('class', 'itemSearch')
+          list.setAttribute('onclick', `displayDetails(${product.id})`)
+          lists.appendChild(list)
+  
+      })
+    }
+
+    itemsSection.appendChild(lists);
+
+  } catch (e) {
+    console.log("error", e.message)
+  }
 }
 
+function onlySpaces(str) {
+  return str.trim().length === 0;
+}
