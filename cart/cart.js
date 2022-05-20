@@ -193,6 +193,7 @@ buy.addEventListener('click', ()=>{
     buyMsg.style.display = 'block'
     cart = [];
     localStorage.setItem('cart',JSON.stringify(cart));
+    postOrder();
   }
   else
     window.location.href = '../createAccount/createAccount.html'
@@ -215,5 +216,24 @@ async function isUser() {
 
   } catch (e) {
     console.log("error", e.message)
+  }
+}
+
+async function postOrder(){
+    
+  try {
+      const response = await fetch("http://127.0.0.1:3000/api/v1/order", {
+          "method": "post",
+          "headers": {
+              "Content-Type": "application/json",
+              "authorization": JSON.parse(localStorage.getItem('token'))
+          },
+          "body": JSON.stringify({"products":localStorage.getItem('cart'),
+                                  "amount":totalPrice}
+                                )
+      })
+      
+  } catch (e) {
+      console.log("error", e.message)
   }
 }

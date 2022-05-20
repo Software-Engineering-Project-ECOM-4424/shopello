@@ -44,34 +44,6 @@ async function logIn(){
     }
 }
 
-function mergeProduct(user){
-    let unknown = JSON.parse(localStorage.getItem("unknown"));
-    unknown.Email = user.Email;
-    unknown.Name = user.Name;
-    unknown.Password = user.Password;
-    unknown.Currency = user.Currency;
-
-    let products = [];
-    for(let i=0;i<unknown.Product.length;i++){
-        products.push(unknown.Product[i])
-    }
-    for(let i=0;i<user.Product.length;i++){
-        let repeated = false;
-        for(let j=0;j<products.length;j++){
-            if(user.Product[i].id == products[j].id){
-                products[j].quantity = parseInt(products[j].quantity) + parseInt(user.Product[i].quantity);
-                repeated = true;
-            }
-        }
-        if(!repeated)
-        products.push(user.Product[i])
-    }
-
-    unknown.Product = products;
-    user.Product = products;
-    localStorage.setItem('unknown', JSON.stringify(unknown));
-    return user;
-}
 
 //user can show or hide password
 function showPassword() {
