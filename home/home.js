@@ -463,7 +463,7 @@ const wrapTags = document.getElementById('wrapTags'),
   lists = document.createElement('ul');
 
 lists.setAttribute('class', 'itemsSearch')
-searchInput.addEventListener('keyup', searchnn)
+searchInput.addEventListener('keyup', search)
 
 //fetch translate api 
 // async function getDataTranslate(arabicWord) {
@@ -484,46 +484,7 @@ searchInput.addEventListener('keyup', searchnn)
 // }
 
 //search function
-function search() {
-    searchValue = searchInput.value
-    timerWord = 0
-    let notfound = document.getElementById('notfound')
-    itemsSection.style.display = 'block'
-    wrapTags.style.display = 'none'
-    main.style.display = 'none'
-    notfound.style.display = 'flex'
-  
-/*
-  setTimeout(() => {
-    itemsSection.style.display = 'block'
-    lists.textContent = ''
-    if (dataForSearch.length > 0 && searchValue !== '' && searchValue !== ' ') {
-      dataForSearch.forEach(el => {
-        let nameOfProduct = el.title
-        let nameOfProductSearch = el.title.toLowerCase()
-        if (nameOfProductSearch.includes(searchValue.toLowerCase().trim())) {
-          found = false
-          wrapTags.style.display = 'flex'
-          main.style.display = 'block'
-          notfound.style.display = 'none'
-          const list = document.createElement('li')
-          list.textContent = nameOfProduct.split(' ').splice(0, 5).join(' ')
-          list.setAttribute('class', 'itemSearch')
-          list.setAttribute('onclick', `getDataDetails(${el.id},displayDetails)`)
-          lists.appendChild(list)
-        }
-      })
-      if (found) {
-        let notfound = document.getElementById('notfound')
-        wrapTags.style.display = 'none'
-        main.style.display = 'none'
-        notfound.style.display = 'flex'
-      }
-    }
-    itemsSection.appendChild(lists)
-  }, timerWord)\
-  */
-}
+
 let notfound = document.getElementById('notfound');
 async function searchnn() {
   if(searchInput.value == '' || onlySpaces(searchInput.value)){
