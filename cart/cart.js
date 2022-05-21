@@ -190,10 +190,11 @@ let buy = document.getElementById('buy');
 
 buy.addEventListener('click', ()=>{
   if(isUser()){
+    postOrder();
     buyMsg.style.display = 'block'
     cart = [];
     localStorage.setItem('cart',JSON.stringify(cart));
-    postOrder();
+
   }
   else
     window.location.href = '../createAccount/createAccount.html'

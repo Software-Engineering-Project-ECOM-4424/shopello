@@ -101,7 +101,10 @@ async function signUp() {
         if(response.status == 409){
             mailExistMsg.style.display = "block"
         }
-        window.location.href='../login/login.html';
+        if(response.status == 201){
+            window.location.href='../login/login.html';
+        }
+        
     } catch (e) {
         console.log("error", e.message)
     }
